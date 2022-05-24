@@ -4,7 +4,11 @@
 require "conecta.php";
 
 function lerProdutos($conexao){
-   $sql = "SELECT id, nome, preco, quantidade, descricao, fabricante_id FROM produtos ORDER BY nome";
+   // $sql = "SELECT id, nome, preco, quantidade, descricao, fabricantes_id FROM produtos ORDER BY nome";
+
+   $sql = "SELECT produtos.id, produtos.nome AS produto, produtos.quantidade, produtos.preco, produtos.descricao, fabricantes.nome AS fabricante
+   FROM produtos INNER JOIN fabricantes
+   ON fabricantes_id = fabricantes.id ORDER BY produto";
 
    $resultado = mysqli_query($conexao, $sql) or die(mysqli_error($conexao));
 
@@ -17,12 +21,14 @@ function lerProdutos($conexao){
 }
 
 
-function inserirProdutos($conexao, $nome){
+function inserirProdutos($conexao, $nome, $preco, $quantidade, $descricao, $fabricanteId){
+
+    $sql = "INSERT INTO produtos(nome, preco, quantidade, descricao, fabricantes_id) VALUES('$nome', '$preco', '$quantidade', '$descricao', $fabricanteId)";
     
     mysqli_query($conexao, $sql) or die(mysqli_error($conexao));
 }
 
-function lerUmFabricante($conexao, $id){
+function lerUmProduto($conexao, $id){
 
     // Montagem do comando SQL com o parâmetro id
     $sql = "SELECT id, nome FROM fabricantes WHERE id = $id";
@@ -34,13 +40,13 @@ function lerUmFabricante($conexao, $id){
     return mysqli_fetch_assoc($resultado);
 }
 
-function atualizarFabricante($conexao, $id, $nome){
+function atualizarProduto($conexao, $id, $nome){
     $sql = "UPDATE fabricantes SET nome ='$nome' WHERE id = $id";
 
     mysqli_query($conexao, $sql) or die (mysqli_error($conexao));
 }
 
-function excluirFabricante($conexao, $id){
-    $sql = "DELETE FROM fabricantes WHERE id = $id";
+function excluirProduto($conexao, $id){
+    $sql = "DELETE FROM produtos WHERE id = $id";
     mysqli_query($conexao, $sql) or die (mysqli_error($conexao));
 }
